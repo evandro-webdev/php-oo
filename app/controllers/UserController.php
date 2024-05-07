@@ -2,10 +2,10 @@
 
 namespace app\controllers;
 
-class NotFoundController
+class UserController
 {
   public function index()
   {
-    dd('index not found controller');
+    dd('user controller index');
   }
 }

@@ -6,6 +6,6 @@ class NotFoundController
 {
   public function index()
   {
-    dd('index not found controller');
+    dd('Error 404');
   }
 }

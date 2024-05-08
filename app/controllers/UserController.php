@@ -2,10 +2,10 @@
 
 namespace app\controllers;
 
-class UserController
+class UserController extends Controller
 {
-  public function index()
+  public function edit($params)
   {
-    dd('user controller index');
+    $this->view('user', ['title' => 'Página do usuário', 'name' => 'Evandro']);
   }
 }

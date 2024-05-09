@@ -13,6 +13,8 @@
     "psr-4": {
       "app\\": "app"
     },
-    "files": []
+    "files": [
+      "app/helpers/json.php"
+    ]
   }
 }

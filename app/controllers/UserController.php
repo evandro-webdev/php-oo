@@ -13,5 +13,8 @@ class UserController extends Controller
 
   public function update($params)
   {
+    $response = Request::only(['lastName', 'password']);
+
+    dd($response);
   }
 }

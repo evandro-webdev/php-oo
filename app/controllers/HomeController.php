@@ -9,13 +9,15 @@ class HomeController extends Controller
 {
   public function index()
   {
-    // $filters = new Filters;
-    // $filters->where('id', '>', 0);
+    $filters = new Filters;
+    $filters->join('posts', 'users.id', '=', 'posts.userId', 'LEFT JOIN');
+    $filters->where('users.id', '>', 2);
     $user = new User;
-    // $user->setFilters($filters);
-    $userFound = $user->count();
+    $user->setFields('users.id, firstName, lastName, title');
+    $user->setFilters($filters);
+    $usersFound = $user->fetchAll();
 
-    dd($userFound);
+    dd($usersFound);
 
     $this->view('home', ['title' => 'Homepage']);
   }

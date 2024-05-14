@@ -12,6 +12,17 @@ abstract class Model
   private string $fields = '*';
   private string $filters = '';
   protected string $table;
+  protected array $atributes = [];
+
+  public function __set(string $property, mixed $value)
+  {
+    $this->atributes[$property] = $value;
+  }
+
+  public function __get(string $property)
+  {
+    return $this->atributes[$property];
+  }
 
   public function setFields($fields)
   {

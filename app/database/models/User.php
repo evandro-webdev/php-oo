@@ -8,9 +8,4 @@ class User extends Model
   {
     $this->table = 'users';
   }
-
-  public function teste()
-  {
-    dd('teste');
-  }
 }

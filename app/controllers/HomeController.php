@@ -4,29 +4,25 @@ namespace app\controllers;
 
 use app\database\Filters;
 use app\database\models\User;
+use app\database\Pagination;
 
 class HomeController extends Controller
 {
   public function index()
   {
-    // $filters = new Filters;
+    $filters = new Filters;
     // $filters->join('posts', 'users.id', '=', 'posts.userId', 'LEFT JOIN');
-    // $filters->where('users.id', '>', 2);
-    // $user = new User;
-    // $user->setFields('users.id, firstName, lastName, title');
-    // $user->setFilters($filters);
-    // $usersFound = $user->fetchAll();
+    $filters->where('id', '>', 2);
 
-    // dd($usersFound);
+    $pagination = new Pagination;
+    $pagination->setItemsPerPage(10);
 
     $user = new User;
-    $created = $user->update('id', 4, [
-      'firstName' => 'John',
-      'lastName' => 'Doe'
-    ]);
+    $user->setFields('firstName, lastName, email');
+    $user->setFilters($filters);
+    $user->setPagination($pagination);
+    $users = $user->fetchAll();
 
-    dd($created);
-
-    $this->view('home', ['title' => 'Homepage']);
+    $this->view('home', ['title' => 'Homepage', 'users' => $users, 'pagination' => $pagination]);
   }
 }

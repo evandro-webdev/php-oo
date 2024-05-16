@@ -6,11 +6,13 @@ use app\database\Connection;
 use PDOException;
 use PDO;
 use app\database\Filters;
+use app\database\Pagination;
 
 abstract class Model
 {
   private string $fields = '*';
   private string $filters = '';
+  private string $pagination = '';
   protected string $table;
   protected array $atributes = [];
 
@@ -32,6 +34,12 @@ abstract class Model
   public function setFilters(Filters $filters)
   {
     $this->filters = $filters->dump();
+  }
+
+  public function setPagination(Pagination $pagination)
+  {
+    $pagination->setTotalItems($this->count());
+    $this->pagination = $pagination->dump();
   }
 
   public function create(array $data)
@@ -75,7 +83,7 @@ abstract class Model
   public function fetchAll()
   {
     try {
-      $sql = "SELECT {$this->fields} FROM {$this->table} {$this->filters}";
+      $sql = "SELECT {$this->fields} FROM {$this->table} {$this->filters} {$this->pagination}";
       $connection = Connection::connect();
 
       $query = $connection->query($sql);

@@ -18,7 +18,7 @@ class HomeController extends Controller
     $pagination->setItemsPerPage(10);
 
     $user = new User;
-    $user->setFields('firstName, lastName, email');
+    $user->setFields('id, firstName, lastName, email');
     $user->setFilters($filters);
     $user->setPagination($pagination);
     $users = $user->fetchAll();

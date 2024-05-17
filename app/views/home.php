@@ -10,7 +10,7 @@
 
 <ul class="list-group">
   <?php foreach ($users as $user) {
-    echo "<li class='list-group-item'>{$user->firstName}</li>";
+    echo "<li class='list-group-item d-flex justify-content-between align-items-center'>{$user->firstName} <a href='/user/{$user->id}' class='btn btn-primary'>Editar</a></li>";
   } ?>
 </ul>
 

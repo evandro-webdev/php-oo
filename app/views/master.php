@@ -10,8 +10,8 @@
 </head>
 
 <body>
-  <div class="container">
-    <?php $this->insert('partials/header') ?>
+  <?php $this->insert('partials/header') ?>
+  <div class="container w-25 p-3">
     <?php echo $this->section('content') ?>
   </div>
 </body>

@@ -1,3 +1,17 @@
 body {
   background-color: azure;
 }
+
+.msg {
+  padding: 4px 10px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+}
+
+.msg-failed {
+  color: #ff4545;
+  background: #ffcfcf;
+}

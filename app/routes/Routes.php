@@ -14,7 +14,7 @@ class Routes
         '/register' => 'RegisterController@store',
       ],
       'post' => [
-        '/user/update' => 'UserController@update'
+        '/user/update/[0-9]+' => 'UserController@update'
       ]
     ];
   }

@@ -19,14 +19,17 @@ class UserController extends Controller
 
   public function update($params)
   {
-    // dd(Request::all());
-
+    // dd('update');
     $validation = new Validation;
-    $validation->validate([
-      // 'firstName' => 'required',
-      // 'lastName' => 'required',
-      // 'email' => 'email|required',
+    $validated = $validation->validate([
+      'firstName' => 'required',
+      'lastName' => 'required',
+      'email' => 'email|required',
       'password' => 'required|maxLen:10',
     ]);
+
+    if (!$validated) {
+      return redirect("/user/{$params[0]}");
+    }
   }
 }

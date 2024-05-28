@@ -19,13 +19,12 @@ class UserController extends Controller
 
   public function update($params)
   {
-    // dd('update');
     $validation = new Validation;
     $validated = $validation->validate([
       'firstName' => 'required',
       'lastName' => 'required',
       'email' => 'email|required',
-      'password' => 'required|maxLen:10',
+      'password' => 'maxLen:10|required',
     ]);
 
     if (!$validated) {

@@ -8,51 +8,74 @@ use Exception;
 class Validation
 {
   use Validations;
+
+  private $inputsValidation = [];
+
+  private function getParam($validationType, $param)
+  {
+    if (substr_count($validationType, ':') == 1) {
+      [$validationType, $param] = explode(':', $validationType);
+    }
+
+    return [$validationType, $param];
+  }
+
+  private function validationExists($validationType)
+  {
+    if (!method_exists($this, $validationType)) {
+      throw new Exception("O método {$validationType} não existe na validação");
+    }
+  }
+
   public function validate(array $validations)
   {
-    $inputsValidation = [];
     foreach ($validations as $field => $validationType) {
       $havePipes = str_contains($validationType, '|');
 
       if (!$havePipes) {
         $param = '';
-        if (substr_count($validationType, ':') == 1) {
-          [$validationType, $param] = explode(':', $validationType);
-        }
 
-        if (!method_exists($this, $validationType)) {
-          throw new Exception("O método {$validationType} não existe na validação");
-        }
+        [$validationType, $param] = $this->getParam($validationType, $param);
 
-        $inputsValidation[$field] = $this->$validationType($field, $param);
+        $this->validationExists($validationType);
+
+        $this->inputsValidation[$field] = $this->$validationType($field, $param);
       } else {
 
         $validations = explode('|', $validationType);
         $param = '';
-        foreach ($validations as $validation) {
-          if (substr_count($validation, ':') == 1) {
-            [$validation, $param] = explode(':', $validation);
-          }
 
-          if (!method_exists($this, $validation)) {
-            throw new Exception("O método {$validation} não existe na validação");
-          }
-
-          $inputsValidation[$field] = $this->$validation($field, $param);
-
-          if (empty($inputsValidation[$field])) {
-            break;
-          }
-        }
+        $inputsValidation[$field] = $this->multipleValidations($validations, $field, $param);
       }
     }
 
+    return $this->returnValidation();
+  }
+
+  private function multipleValidations($validations, $field, $param)
+  {
+    foreach ($validations as $validation) {
+
+      [$validation, $param] = $this->getParam($validation, $param);
+
+      $this->validationExists($validation);
+
+      $this->inputsValidation[$field] = $this->$validation($field, $param);
+
+      if ($this->inputsValidation[$field] === null) {
+        break;
+      }
+    }
+  }
+
+  private function returnValidation()
+  {
     Csrf::validateToken();
 
-    if (in_array(null, $inputsValidation, true)) {
+    if (in_array(null, $this->inputsValidation, true)) {
       return null;
     }
 
-    return $inputsValidation[$field];
+    return $this->inputsValidation;
   }
 }

@@ -19,9 +19,21 @@ trait Validations
     return strip_tags($data, '<p><b>');
   }
 
-  public function unique($field)
+  public function unique($field, $param)
   {
-    // $data = Request::input($field);
+    $data = Request::input($field);
+
+    $model = new $param;
+    $registerFound = $model->findBy($field, $data);
+
+    // dd($registerFound);
+
+    if ($registerFound) {
+      Flash::set($field, "{$data} já está registrado");
+      return null;
+    }
+
+    return strip_tags($data, '<p><b>');
   }
 
   public function email($field)

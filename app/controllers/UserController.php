@@ -23,7 +23,7 @@ class UserController extends Controller
     $validated = $validation->validate([
       'firstName' => 'required',
       'lastName' => 'required',
-      'email' => 'email|required',
+      'email' => 'email|required|unique:' . User::class,
       'password' => 'maxLen:10|required',
     ]);
 

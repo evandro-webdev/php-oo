@@ -15,14 +15,14 @@
     <?php echo flash('lastName', 'msg-failed') ?>
     <input type="text" name="lastName" value="<?php echo $user->lastName ?>" class="form-control" id="lastName" placeholder="Digite seu segundo nome">
   </div>
-  <?php echo flash('email', 'msg-failed') ?>
   <div class="mb-3">
     <label for="email" class="form-label">Email</label>
+    <?php echo flash('email', 'msg-failed') ?>
     <input type="email" name="email" value="<?php echo $user->email ?>" class="form-control" id="email" placeholder="nome@exemplo.com">
   </div>
-  <?php echo flash('password', 'msg-failed') ?>
   <div class="mb-3">
     <label for="password" class="form-label">Senha</label>
+    <?php echo flash('password', 'msg-failed') ?>
     <input type="password" name="password" value="<?php echo $user->password ?>" class="form-control" id="password" placeholder="Digite sua senha">
   </div>
   <?php echo getToken() ?>

@@ -11,14 +11,14 @@ class HomeController extends Controller
   public function index()
   {
     $filters = new Filters;
-    // $filters->join('posts', 'users.id', '=', 'posts.userId', 'LEFT JOIN');
-    $filters->where('id', '>', 2);
+    $filters->where('users.id', '>', 0);
+    $filters->join('posts', 'users.id', '=', 'posts.userId', 'INNER JOIN');
 
     $pagination = new Pagination;
     $pagination->setItemsPerPage(10);
 
     $user = new User;
-    $user->setFields('id, firstName, lastName, email');
+    $user->setFields('users.id, firstName, lastName, email');
     $user->setFilters($filters);
     $user->setPagination($pagination);
     $users = $user->fetchAll();

@@ -11,7 +11,7 @@ use app\database\Pagination;
 abstract class Model
 {
   private string $fields = '*';
-  private string $filters = '';
+  private ?Filters $filters = null;
   private string $pagination = '';
   protected string $table;
   protected array $atributes = [];
@@ -33,7 +33,7 @@ abstract class Model
 
   public function setFilters(Filters $filters)
   {
-    $this->filters = $filters->dump();
+    $this->filters = $filters;
   }
 
   public function setPagination(Pagination $pagination)
@@ -83,11 +83,12 @@ abstract class Model
   public function fetchAll()
   {
     try {
-      $sql = "SELECT {$this->fields} FROM {$this->table} {$this->filters} {$this->pagination}";
+      $sql = "SELECT {$this->fields} FROM {$this->table} {$this->filters?->dump()} {$this->pagination} ";
       $connection = Connection::connect();
 
-      $query = $connection->query($sql);
-      return $query->fetchAll(PDO::FETCH_CLASS, get_called_class());
+      $prepare = $connection->prepare($sql);
+      $prepare->execute($this->filters ? $this->filters->getBind() : []);
+      return $prepare->fetchAll(PDO::FETCH_CLASS);
     } catch (PDOException $e) {
       dd($e->getMessage());
     }
@@ -97,15 +98,15 @@ abstract class Model
   {
     try {
       $sql = (!empty($this->filters)) ?
-        "SELECT {$this->fields} FROM {$this->table} {$this->filters}" :
+        "SELECT {$this->fields} FROM {$this->table} {$this->filters?->dump()}" :
         "SELECT {$this->fields} FROM {$this->table} WHERE {$field} = :{$field}";
 
       $connection = Connection::connect();
 
       $prepare = $connection->prepare($sql);
-      $prepare->execute(empty($this->filters) ? [$field => $value] : []);
+      $prepare->execute($this->filters ? $this->filters->getBind() : [$field => $value]);
 
-      return $prepare->fetchObject(get_called_class());
+      return $prepare->fetchObject();
     } catch (PDOException $e) {
       dd($e->getMessage());
     }
@@ -119,7 +120,7 @@ abstract class Model
 
       $query = $connection->query($sql);
 
-      return $query->fetchObject(get_called_class());
+      return $query->fetchObject();
     } catch (PDOException $e) {
       dd($e->getMessage());
     }
@@ -135,7 +136,7 @@ abstract class Model
       $connection = Connection::connect();
 
       $prepare = $connection->prepare($sql);
-      return $prepare->execute(empty($this->filters) ? [$field => $value] : []);
+      return $prepare->execute(empty($this->filters) ? [$field => $value] : $this->filters->getBind());
     } catch (PDOException $e) {
       dd($e->getMessage());
     }
@@ -144,12 +145,13 @@ abstract class Model
   public function count()
   {
     try {
-      $sql = "SELECT {$this->fields} FROM {$this->table} {$this->table}";
+      $sql = "SELECT {$this->fields} FROM {$this->table} {$this->filters?->dump()}";
       $connection = Connection::connect();
 
-      $query = $connection->query($sql);
+      $prepare = $connection->prepare($sql);
+      $prepare->execute($this->filters ? $this->filters->getBind() : []);
 
-      return $query->rowCount();
+      return $prepare->rowCount();
     } catch (PDOException $e) {
       dd($e->getMessage());
     }

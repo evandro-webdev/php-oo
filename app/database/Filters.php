@@ -5,6 +5,7 @@ namespace app\database;
 class Filters
 {
   private array $filters = [];
+  private array $binds = [];
 
   public function where(string $field, string $operator, mixed $value, string $logic = '')
   {
@@ -21,8 +22,15 @@ class Filters
     }
 
     $value = strip_tags($formatter);
+    $fieldBind = str_contains($field, '.') ? str_replace('.', '', $field) : $field;
 
-    $this->filters['where'][] = "{$field} {$operator} {$value} {$logic}";
+    $this->filters['where'][] = "{$field} {$operator} :{$fieldBind} {$logic}";
+    $this->binds[$fieldBind] = $value;
+  }
+
+  public function getBind()
+  {
+    return $this->binds;
   }
 
   public function orderBy(string $field, string $order = 'asc')
@@ -46,7 +54,7 @@ class Filters
     $filter .= !empty($this->filters['where']) ? ' WHERE ' . implode(' ', $this->filters['where']) : '';
     $filter .= $this->filters["order"] ?? '';
     $filter .= $this->filters["limit"] ?? '';
-
+    // dd($filter);
     return $filter;
   }
 }
